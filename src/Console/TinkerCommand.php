@@ -5,6 +5,7 @@ namespace Laravel\Tinker\Console;
 use Psy\Shell;
 use Psy\Configuration;
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
 class TinkerCommand extends Command
@@ -41,7 +42,9 @@ class TinkerCommand extends Command
     {
         $this->getApplication()->setCatchExceptions(false);
 
-        $config = new Configuration;
+        $config = new Configuration([
+            'updateCheck' => $this->option('update') ? 'always' : 'never'
+        ]);
 
         $config->getPresenter()->addCasters(
             $this->getCasters()
@@ -103,6 +106,18 @@ class TinkerCommand extends Command
     {
         return [
             ['include', InputArgument::IS_ARRAY, 'Include file(s) before starting tinker'],
+        ];
+    }
+
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['update', 'u', InputOption::VALUE_NONE, 'Check for Psy Shell updates'],
         ];
     }
 }
